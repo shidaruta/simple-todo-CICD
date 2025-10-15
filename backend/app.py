@@ -14,7 +14,8 @@ class Todo(db.Model):
     completed = db.Column(db.Boolean, default=False)
 
 
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 # API routes
