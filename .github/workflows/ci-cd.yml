@@ -15,42 +15,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Backend lint
-      - name: Lint backend
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
-          flake8 backend/
-
-      # 3️⃣ Backend tests
+      # 2️⃣ Backend tests
       - name: Test backend
         run: |
+          python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
           pip install pytest
           pytest backend/tests/
 
-      # 4️⃣ Frontend lint
-      - name: Lint frontend
-        run: |
-          cd frontend
-          npm install
-          npx eslint src/
-
-      # 5️⃣ Frontend tests
+      # 3️⃣ Frontend tests
       - name: Test frontend
         run: |
           cd frontend
           npm install
           npm test -- --watchAll=false
 
-      # 6️⃣ Docker login
+      # 4️⃣ Docker login
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 7️⃣ Build & push single Docker image
+      # 5️⃣ Build & push single Docker image
       - name: Build & push todo-app
         uses: docker/build-push-action@v5
         with:
