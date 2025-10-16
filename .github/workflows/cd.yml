@@ -1,0 +1,41 @@
+name: CD Pipeline - Build & Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ vars.DOCKER_USERNAME }}/todo-app-cicd:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Output summary
+        run: |
+          echo "🚀 Docker image built and pushed successfully!"
+          echo "📦 Repo: ${{ vars.DOCKER_USERNAME }}/task-manager"
+          echo "🏷️ Tags: latest, ${{ github.sha }}"
+          echo "🔗 Docker Hub: https://hub.docker.com/r/${{ vars.DOCKER_USERNAME }}/task-manager"
