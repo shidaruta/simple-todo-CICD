@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="static", static_url_path="")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todos.db"
 db = SQLAlchemy(app)
 
